@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using VisualFXVault.Domain.Interfaces.Services;
+using VisualFXVault.Domain.Services;
 
 namespace VisualFXVault.Domain.Extensions;
 
@@ -11,6 +13,8 @@ public static class DependencyInjection
     /// <returns>The updated service collection.</returns>
     public static IServiceCollection AddDomain(this IServiceCollection services)
     {
+        services.AddScoped<IUsersService, UsersService>();
+
         return services;
     }
 }
