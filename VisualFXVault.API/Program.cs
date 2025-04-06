@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using FluentValidation.AspNetCore;
+using Scalar.AspNetCore;
 using VisualFXVault.API.Middlewares;
 using VisualFXVault.Domain.Extensions;
 using VisualFXVault.Domain.Mappers;
@@ -23,11 +24,33 @@ builder.Services.AddAutoMapper(typeof(RegisterRequestMappingProfile).Assembly);
 
 builder.Services.AddFluentValidationAutoValidation();
 
+builder.Services.AddOpenApi();
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:4200") // Replace with frontend URL
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
 
 app.UseExceptionHandling();
 
 app.UseRouting();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.MapOpenApi(); // Enable OpenAPI in development
+    app.MapScalarApiReference(); // Enable Swagger UI in development
+}
+
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
