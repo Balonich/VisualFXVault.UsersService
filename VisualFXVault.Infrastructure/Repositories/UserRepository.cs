@@ -1,19 +1,30 @@
+using Dapper;
 using VisualFXVault.Domain.DTOs;
 using VisualFXVault.Domain.Entities;
 using VisualFXVault.Domain.Interfaces.Repositories;
+using VisualFXVault.Infrastructure.DbContext;
 
 namespace VisualFXVault.Infrastructure.Repositories;
 
 internal class UserRepository : IUserRepository
 {
-    public UserRepository()
+    private readonly DapperDbContext _dbContext;
+
+    public UserRepository(DapperDbContext dbContext)
     {
+        _dbContext = dbContext;
     }
 
     public async Task<ApplicationUser?> AddUserAsync(ApplicationUser user)
     {
         user.UserId = Guid.NewGuid();
-        // TODO: Add user to the database using Dapper
+
+        var rowCountAffected = await _dbContext.DbConnection.ExecuteAsync(DapperSqlQueries.UserQueries.Insert, user);
+
+        if (rowCountAffected == 0)
+        {
+            return null;
+        }
 
         return user;
     }
@@ -33,14 +44,15 @@ internal class UserRepository : IUserRepository
 
     public async Task<ApplicationUser?> GetUserByEmailAndPasswordAsync(string email, string password)
     {
-        // TODO: This is a mock implementation. Replace with actual database call.
-        return new ApplicationUser()
+        var user = await _dbContext.DbConnection.QueryFirstOrDefaultAsync<ApplicationUser>(
+            DapperSqlQueries.UserQueries.GetByEmailAndPassword,
+            new { email, password });
+
+        if (user == null || user == default(ApplicationUser))
         {
-            UserId = Guid.NewGuid(),
-            Email = email,
-            Password = password,
-            Username = "Some name",
-            Gender = GenderOptions.Male.ToString()
-        };
+            return null;
+        }
+        
+        return user;
     }
 }
