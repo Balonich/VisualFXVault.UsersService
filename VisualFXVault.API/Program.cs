@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using VisualFXVault.API.Middlewares;
 using VisualFXVault.Domain.Extensions;
+using VisualFXVault.Domain.Mappers;
 using VisualFXVault.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,9 @@ builder.Services.AddControllers().AddJsonOptions(
         new JsonStringEnumConverter()
     )
 );
+
+builder.Services.AddAutoMapper(typeof(ApplicationUserMappingProfile).Assembly);
+builder.Services.AddAutoMapper(typeof(RegisterRequestMappingProfile).Assembly);
 
 var app = builder.Build();
 

@@ -1,3 +1,4 @@
+using AutoMapper;
 using VisualFXVault.Domain.DTOs;
 using VisualFXVault.Domain.Entities;
 using VisualFXVault.Domain.Interfaces.Repositories;
@@ -8,21 +9,17 @@ namespace VisualFXVault.Domain.Services;
 internal class UsersService : IUsersService
 {
     private readonly IUserRepository _userRepository;
+    private readonly IMapper _mapper;
 
-    public UsersService(IUserRepository userRepository)
+    public UsersService(IUserRepository userRepository, IMapper mapper)
     {
         _userRepository = userRepository;
+        _mapper = mapper;
     }
 
     public async Task<AuthenticationResponseDto?> RegisterAsync(RegisterRequestDto registerRequest)
     {
-        var user = new ApplicationUser()
-        {
-            Email = registerRequest.Email,
-            Password = registerRequest.Password,
-            Username = registerRequest.Username,
-            Gender = registerRequest.Gender.ToString()
-        };
+        var user = _mapper.Map<ApplicationUser>(registerRequest);
 
         var registeredUser = await _userRepository.AddUserAsync(user);
 
@@ -31,13 +28,11 @@ internal class UsersService : IUsersService
             return null;
         }
 
-        return new AuthenticationResponseDto(
-            registeredUser.UserId,
-            registeredUser.Email,
-            registeredUser.Username,
-            registeredUser.Gender,
-            "token",
-            IsSuccessful: true);
+        return _mapper.Map<AuthenticationResponseDto>(registeredUser) with
+        {
+            IsSuccessful = true,
+            Token = "token"
+        };
     }
 
     public async Task<AuthenticationResponseDto?> LoginAsync(LoginRequestDto loginRequest)
@@ -49,12 +44,10 @@ internal class UsersService : IUsersService
             return null;
         }
 
-        return new AuthenticationResponseDto(
-            user.UserId,
-            user.Email,
-            user.Username,
-            user.Gender,
-            "token",
-            IsSuccessful: true);
+        return _mapper.Map<AuthenticationResponseDto>(user) with
+        {
+            IsSuccessful = true,
+            Token = "token"
+        };
     }
 }
