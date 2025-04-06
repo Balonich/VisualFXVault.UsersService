@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using FluentValidation.AspNetCore;
 using VisualFXVault.API.Middlewares;
 using VisualFXVault.Domain.Extensions;
 using VisualFXVault.Domain.Mappers;
@@ -19,6 +20,8 @@ builder.Services.AddControllers().AddJsonOptions(
 
 builder.Services.AddAutoMapper(typeof(ApplicationUserMappingProfile).Assembly);
 builder.Services.AddAutoMapper(typeof(RegisterRequestMappingProfile).Assembly);
+
+builder.Services.AddFluentValidationAutoValidation();
 
 var app = builder.Build();
 

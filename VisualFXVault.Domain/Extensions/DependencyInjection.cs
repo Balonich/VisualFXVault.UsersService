@@ -1,6 +1,8 @@
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using VisualFXVault.Domain.Interfaces.Services;
 using VisualFXVault.Domain.Services;
+using VisualFXVault.Domain.Validators;
 
 namespace VisualFXVault.Domain.Extensions;
 
@@ -14,6 +16,10 @@ public static class DependencyInjection
     public static IServiceCollection AddDomain(this IServiceCollection services)
     {
         services.AddScoped<IUsersService, UsersService>();
+
+        // Register FluentValidation validators
+        // This will scan the assembly for all classes that implement IValidator<T> and register them
+        services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
 
         return services;
     }
