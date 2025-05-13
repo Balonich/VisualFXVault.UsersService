@@ -29,24 +29,25 @@ internal class UserRepository : IUserRepository
         return user;
     }
 
-    public async Task<ApplicationUser?> GetUserByIdAsync(Guid userId)
+    public async Task<ApplicationUser?> GetUserByIdAsync(Guid? userId)
     {
-        // TODO: This is a mock implementation. Replace with actual database call.
-        return new ApplicationUser()
+        var user = await _dbContext.DbConnection.QueryFirstOrDefaultAsync<ApplicationUser>(
+            DapperSqlQueries.UserQueries.GetById,
+            new { UserId = userId });
+
+        if (user == null || user == default(ApplicationUser))
         {
-            UserId = userId,
-            Email = "some-email@gmail.com",
-            Password = "alalapass",
-            Username = "Some name",
-            Gender = GenderOptions.Male.ToString()
-        };
+            return null;
+        }
+
+        return user;
     }
 
     public async Task<ApplicationUser?> GetUserByEmailAndPasswordAsync(string email, string password)
     {
         var user = await _dbContext.DbConnection.QueryFirstOrDefaultAsync<ApplicationUser>(
             DapperSqlQueries.UserQueries.GetByEmailAndPassword,
-            new { email, password });
+            new { Email = email, Password = password });
 
         if (user == null || user == default(ApplicationUser))
         {

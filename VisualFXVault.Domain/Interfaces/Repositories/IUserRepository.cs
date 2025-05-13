@@ -29,7 +29,7 @@ public interface IUserRepository
     /// A task that represents the asynchronous operation. The task result contains the user
     /// with the specified ID, or null if no user is found.
     /// </returns>
-    Task<ApplicationUser?> GetUserByIdAsync(Guid userId);
+    Task<ApplicationUser?> GetUserByIdAsync(Guid? userId);
 
     /// <summary>
     /// Asynchronously retrieves a user by their email and password.
