@@ -22,6 +22,9 @@ public class DapperDbContext
 
         var connectionString = connectionStringTemplate
             .Replace("$POSTGRES_HOST", Environment.GetEnvironmentVariable("POSTGRES_HOST"))
+            .Replace("$POSTGRES_PORT", Environment.GetEnvironmentVariable("POSTGRES_PORT"))
+            .Replace("$POSTGRES_DB", Environment.GetEnvironmentVariable("POSTGRES_DB"))
+            .Replace("$POSTGRES_USER", Environment.GetEnvironmentVariable("POSTGRES_USER"))
             .Replace("$POSTGRES_PASSWORD", Environment.GetEnvironmentVariable("POSTGRES_PASSWORD"));
 
         _connection = new NpgsqlConnection(connectionString);

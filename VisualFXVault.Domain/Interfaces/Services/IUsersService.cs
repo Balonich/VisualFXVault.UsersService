@@ -26,4 +26,14 @@ public interface IUsersService
     /// Contains status of login attempt and user information if successful.
     /// </returns>
     Task<AuthenticationResponseDto?> LoginAsync(LoginRequestDto loginRequest);
+
+    /// <summary>
+    /// Method to get user by ID.
+    /// </summary>
+    /// <param name="userId">The ID of the user to retrieve.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains the user response object.
+    /// Contains user information if found.
+    /// </returns>
+    Task<UserResponseDto?> GetUserByIdAsync(Guid userId);
 }

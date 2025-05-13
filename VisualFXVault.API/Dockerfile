@@ -21,5 +21,8 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENV POSTGRES_HOST=localhost
+ENV POSTGRES_PORT=5432
+ENV POSTGRES_DB=VisualFXVaultUsers
 ENV POSTGRES_PASSWORD=yourStrong(!)Password
+ENV POSTGRES_USER=postgres
 ENTRYPOINT ["dotnet", "VisualFXVault.API.dll"]

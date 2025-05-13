@@ -50,4 +50,16 @@ internal class UsersService : IUsersService
             Token = "token"
         };
     }
+
+    public async Task<UserResponseDto?> GetUserByIdAsync(Guid userId)
+    {
+        var user = await _userRepository.GetUserByIdAsync(userId);
+
+        if (user == null)
+        {
+            return null;
+        }
+
+        return _mapper.Map<UserResponseDto>(user);
+    }
 }
